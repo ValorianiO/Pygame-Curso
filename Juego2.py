@@ -1,4 +1,5 @@
 import pygame
+import random
 
 ancho = 800
 alto = 600
@@ -24,7 +25,7 @@ class Jugador(pygame.sprite.Sprite):
     self.image.set_colorkey(azul2)
 
     self.rect = self.image.get_rect()
-    self.rect.center = (ancho//2, alto//2)
+    self.rect.center = (200,200)
     self.velocidad_x = 0 
     self.velocidad_y = 0
 
@@ -57,6 +58,17 @@ class Jugador(pygame.sprite.Sprite):
     
     if self.rect.top < 0:
       self.rect.top = 0
+          
+class enemigos(pygame.sprite.Sprite):
+  def __init__(self):
+    super().__init__()
+    self.image = pygame.image.load("imagenes/enemigo.png").convert()
+    
+    self.rect = self.image.get_rect()
+    self.image.set_colorkey(negro)
+    self.rect.x = random.randrange(ancho - self.rect.width)
+    self.rect.y = random.randrange(alto - self.rect.height)
+
 
 
 pygame.init()
@@ -67,6 +79,12 @@ clock = pygame.time.Clock()
 sprites =pygame.sprite.Group()
 jugador = Jugador()
 sprites.add(jugador)
+
+for x in range(random.randrange(5)+ 1):
+  enemigo = enemigos()
+  sprites.add(enemigo)
+
+
 
 ejecutando = True
 
