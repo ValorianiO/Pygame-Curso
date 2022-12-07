@@ -59,7 +59,7 @@ class Jugador(pygame.sprite.Sprite):
     if self.rect.top < 0:
       self.rect.top = 0
           
-class enemigos(pygame.sprite.Sprite):
+class Enemigos(pygame.sprite.Sprite):
   def __init__(self):
     super().__init__()
     self.image = pygame.image.load("imagenes/enemigo.png").convert()
@@ -93,13 +93,15 @@ pygame.display.set_caption("Trabajando con sprites")
 clock = pygame.time.Clock()
 
 sprites =pygame.sprite.Group()
+enemigos =pygame.sprite.Group()
+
+enemigo = Enemigos()
+enemigos.add(enemigo)
+
+
+
 jugador = Jugador()
 sprites.add(jugador)
-
-for x in range(random.randrange(5)+ 1):
-  enemigo = enemigos()
-  sprites.add(enemigo)
-
 
 
 ejecutando = True
@@ -111,9 +113,20 @@ while ejecutando:
       ejecutando = False
 
   sprites.update()
+  enemigos.update()
+  
+  colision = pygame.sprite.spritecollide(jugador, enemigos, False)
+
+  if colision:
+    enemigo.image = pygame.image.load("imagenes/explosion.png")
+    enemigo.velocidad_y += 20
+  elif enemigo.rect.top > alto:
+    enemigo.kill()
+
 
   pantalla.fill(negro)
   sprites.draw(pantalla)
+  enemigos.draw(pantalla)
   pygame.draw.line(pantalla, h_50d2fe, (400,0), (400,800), 1)
   pygame.draw.line(pantalla, azul, (0, 300), (800, 300), 1)
   pygame.display.flip()
