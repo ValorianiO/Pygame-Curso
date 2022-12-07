@@ -68,6 +68,22 @@ class enemigos(pygame.sprite.Sprite):
     self.image.set_colorkey(negro)
     self.rect.x = random.randrange(ancho - self.rect.width)
     self.rect.y = random.randrange(alto - self.rect.height)
+    self.velocidad_x = random.randrange(1,10)
+    self.velocidad_y = random.randrange(1,10)
+
+  def  update(self):
+    self.rect.x += self.velocidad_x
+    self.rect.y += self.velocidad_y
+    if self.rect.left < 0:
+      self.velocidad_x += 1
+    if self.rect.right > ancho:
+      self.velocidad_x -= 1
+    
+    if self.rect.bottom > alto:
+      self.velocidad_y -= 1
+    
+    if self.rect.top < 0:
+      self.velocidad_y += 1
 
 
 
