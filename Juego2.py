@@ -18,17 +18,18 @@ h_50d2fe= (94,210,254)
 class Jugador(pygame.sprite.Sprite):
   def __init__(self):
     super().__init__()
-    self.image = pygame.Surface((200, 200))
-    self.image.fill(h_fa2f2f)
+    self.image = pygame.image.load("imagenes/idle1.png").convert()
+    
+    self.image.set_colorkey(verde)
 
     self.rect = self.image.get_rect()
     self.rect.center = (ancho//2, alto//2)
 
   def update(self):
-    self.rect.y += 10
-    if self.rect.top > alto:
-      self.rect.bottom = 0
-
+    self.rect.x -= 10
+    if self.rect.right < 0:
+      self.rect.left = ancho
+ 
 pygame.init()
 pantalla = pygame.display.set_mode((ancho, alto))
 pygame.display.set_caption("Trabajando con sprites")
