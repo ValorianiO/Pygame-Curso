@@ -12,6 +12,9 @@ pygame.display.set_caption("Exterminator")
 icono = pygame.image.load("imagenes/gunner.png")
 fondo = pygame.image.load("imagenes/ciudad.png")
 
+pygame.mixer.music.load('sonido/intergalactic_odyssey.ogg')
+pygame.mixer.music.play(-1)
+
 pygame.display.set_icon(icono)
 quieto = pygame.image.load('imagenes/idle1.png')
 
@@ -31,6 +34,12 @@ caminaIzquierda = [pygame.image.load('imagenes/run1-izq.png'),
 
 salta =[pygame.image.load('imagenes/jump1.png'),
             pygame.image.load('imagenes/jump2.png') ]
+
+sonido_arriba = pygame.image.load('sonido/volume_up.png')
+sonido_abajo = pygame.image.load('sonido/volume_down.png')
+sonido_mute = pygame.image.load('sonido/volume_muted.png')
+sonido_max = pygame.image.load('sonido/volume_max.png')
+
 x = 0
 px =50
 py= 200
@@ -117,7 +126,28 @@ while ejecuta:
       else:
         cuentaSalto = 10
         salto = False
-    
+
+    if keys[pygame.K_9] and pygame.mixer.music.get_volume() > 0.0:
+      pygame.mixer.music.set_volume(pygame.mixer.music.get_volume() - 0.01)
+      pantalla.blit(sonido_abajo, (850, 25))
+    elif keys[pygame.K_9] and pygame.mixer.music.get_volume() == 0.0:
+      pantalla.blit(sonido_mute, (850, 25))
+
+    if keys[pygame.K_0] and pygame.mixer.music.get_volume() < 1.0:
+      pygame.mixer.music.set_volume(pygame.mixer.music.get_volume() + 0.01)
+      pantalla.blit(sonido_arriba, (850, 25))
+    elif keys [pygame.K_0] and pygame.mixer.music.get_volume() == 1.0:
+      pantalla.blit(sonido_max, (850, 25))
+
+    elif keys[pygame.K_m]:
+      pygame.mixer.music.set_volume(0.0)
+      pantalla.blit(sonido_mute, (850, 25))
+
+    elif keys[pygame.K_COMMA]:
+      pygame.mixer.music.set_volume(1.0)
+      pantalla.blit(sonido_max, (850, 25))
+   
+    pygame.display.update()
     recargaPantalla()
 
 pygame.quit()
