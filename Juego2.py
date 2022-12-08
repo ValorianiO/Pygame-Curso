@@ -25,6 +25,7 @@ class Jugador(pygame.sprite.Sprite):
     self.image.set_colorkey(azul2)
 
     self.rect = self.image.get_rect()
+    self.radius = 22
     self.rect.center = (200,200)
     self.velocidad_x = 0 
     self.velocidad_y = 0
@@ -80,6 +81,7 @@ class Enemigos(pygame.sprite.Sprite):
     
     self.rect = self.image.get_rect()
     self.image.set_colorkey(negro)
+    self.radius = 48
     self.rect.x = random.randrange(ancho - self.rect.width)
     self.rect.y = random.randrange(alto - self.rect.height)
     self.velocidad_x = random.randrange(1,10)
@@ -142,9 +144,11 @@ while ejecutando:
   sprites.update()
   enemigos.update()
   balas.update()
-  colision = pygame.sprite.spritecollide(jugador, enemigos, False)
 
-  if colision:
+  colision_nave = pygame.sprite.spritecollide(jugador, enemigos, False, pygame.sprite.collide_circle)
+  colision = pygame.sprite.groupcollide(enemigos, balas, False, True)
+
+  if colision or colision_nave:
     enemigo.image = pygame.image.load("imagenes/explosion.png")
     enemigo.velocidad_y += 20
   elif enemigo.rect.top > alto:
