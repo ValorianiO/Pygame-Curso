@@ -26,7 +26,7 @@ class Jugador(pygame.sprite.Sprite):
 
     self.rect = self.image.get_rect()
     self.radius = 22
-    self.rect.center = (200,200)
+    self.rect.center = (400,600)
     self.velocidad_x = 0 
     self.velocidad_y = 0
 
@@ -109,10 +109,38 @@ class Disparos(pygame.sprite.Sprite):
     self.rect = self.image.get_rect()
     self.rect.bottom = y
     self.rect.centerx = x
+
   def update(self):
     self.rect.y -= 25
     if self.rect.bottom < 0:
       self.kill()
+
+class  Meteoritos(pygame.sprite.Sprite):
+  def __init__(self):
+    super().__init__()
+    self.img_aleatoria = random.randrange(3)
+    if self.img_aleatoria == 0:
+      self.image = pygame.transform.scale(pygame.image.load("imagenes/meteorito.png").convert(), (100,100))
+      self.radius = 50
+    if self.img_aleatoria == 1:
+      self.image = pygame.transform.scale(pygame.image.load("imagenes/meteorito.png").convert(), (50,50))
+      self.radius = 25
+    if self.img_aleatoria == 2:
+      self.image = pygame.transform.scale(pygame.image.load("imagenes/meteorito.png").convert(), (25,25))
+      self.radius = 12
+    self.image.set_colorkey(negro)
+    self.rect = self. image.get_rect()
+    self.rect.x = random.randrange(ancho - self.rect.width)
+    self.rect.y = -self.rect.width
+    self.velocidad_y = random.randrange(1,10)
+
+  def update(self):
+    self.rect.y += self.velocidad_y
+    if self.rect.top > alto:
+      self.rect.x = random.randrange(ancho - self.rect.width)
+      self.rect.y = -self.rect.width
+      self.velocidad_y = random.randrange(1,10)
+
 
 
 pygame.init()
@@ -123,6 +151,8 @@ clock = pygame.time.Clock()
 sprites =pygame.sprite.Group()
 enemigos =pygame.sprite.Group()
 balas = pygame.sprite.Group()
+meteoritos = pygame.sprite.Group()
+
 
 enemigo = Enemigos()
 enemigos.add(enemigo)
@@ -132,6 +162,9 @@ enemigos.add(enemigo)
 jugador = Jugador()
 sprites.add(jugador)
 
+for x in range (10):
+  meteorito = Meteoritos()
+  meteoritos.add(meteorito)
 
 ejecutando = True
 
@@ -144,11 +177,12 @@ while ejecutando:
   sprites.update()
   enemigos.update()
   balas.update()
+  meteoritos.update()
 
-  colision_nave = pygame.sprite.spritecollide(jugador, enemigos, False, pygame.sprite.collide_circle)
-  colision = pygame.sprite.groupcollide(enemigos, balas, False, True)
+  colision_nave = pygame.sprite.spritecollide(jugador, meteoritos, False, pygame.sprite.collide_circle)
+  colision_disparos = pygame.sprite.groupcollide(meteoritos, balas, False, False)
 
-  if colision or colision_nave:
+  if colision_nave or colision_disparos:
     enemigo.image = pygame.image.load("imagenes/explosion.png")
     enemigo.velocidad_y += 20
   elif enemigo.rect.top > alto:
@@ -159,8 +193,7 @@ while ejecutando:
   sprites.draw(pantalla)
   enemigos.draw(pantalla)
   balas.draw(pantalla)
-  pygame.draw.line(pantalla, h_50d2fe, (400,0), (400,800), 1)
-  pygame.draw.line(pantalla, azul, (0, 300), (800, 300), 1)
+  meteoritos.draw(pantalla)
   pygame.display.flip()
   
 
