@@ -44,6 +44,10 @@ class Jugador(pygame.sprite.Sprite):
       self.velocidad_y = -10
     if teclas[pygame.K_s]:
        self.velocidad_y = 10
+    if teclas[pygame.K_SPACE]:
+       jugador.disparo()
+       jugador.disparo2()
+       jugador.disparo3()
 
     self.rect.x += self.velocidad_x
     self.rect.y += self.velocidad_y
@@ -59,6 +63,16 @@ class Jugador(pygame.sprite.Sprite):
     if self.rect.top < 0:
       self.rect.top = 0
           
+  def disparo(self):
+    bala = Disparos(self.rect.centerx, self.rect.top)
+    balas.add(bala)
+  def disparo2(self):
+    bala = Disparos(self.rect.centerx + 23, self.rect.top + 30)
+    balas.add(bala)
+  def disparo3(self):
+    bala = Disparos(self.rect.centerx - 23, self.rect.top + 30)
+    balas.add(bala)
+
 class Enemigos(pygame.sprite.Sprite):
   def __init__(self):
     super().__init__()
@@ -85,6 +99,18 @@ class Enemigos(pygame.sprite.Sprite):
     if self.rect.top < 0:
       self.velocidad_y += 1
 
+class Disparos(pygame.sprite.Sprite):
+  def __init__(self, x, y):
+    super().__init__()
+    self.image = pygame.transform.scale(pygame.image.load("imagenes/disparo.png").convert(),(10,20))
+    self.image.set_colorkey(negro)
+    self.rect = self.image.get_rect()
+    self.rect.bottom = y
+    self.rect.centerx = x
+  def update(self):
+    self.rect.y -= 25
+    if self.rect.bottom < 0:
+      self.kill()
 
 
 pygame.init()
@@ -94,6 +120,7 @@ clock = pygame.time.Clock()
 
 sprites =pygame.sprite.Group()
 enemigos =pygame.sprite.Group()
+balas = pygame.sprite.Group()
 
 enemigo = Enemigos()
 enemigos.add(enemigo)
@@ -114,7 +141,7 @@ while ejecutando:
 
   sprites.update()
   enemigos.update()
-  
+  balas.update()
   colision = pygame.sprite.spritecollide(jugador, enemigos, False)
 
   if colision:
@@ -127,8 +154,10 @@ while ejecutando:
   pantalla.fill(negro)
   sprites.draw(pantalla)
   enemigos.draw(pantalla)
+  balas.draw(pantalla)
   pygame.draw.line(pantalla, h_50d2fe, (400,0), (400,800), 1)
   pygame.draw.line(pantalla, azul, (0, 300), (800, 300), 1)
   pygame.display.flip()
+  
 
 pygame.quit()
