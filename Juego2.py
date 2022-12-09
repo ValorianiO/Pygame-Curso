@@ -22,6 +22,18 @@ times = pygame.font.match_font('times')
 arial  = pygame.font.match_font('arial')
 courier = pygame.font.match_font('courier')
 
+pygame.mixer.init()
+pygame.mixer.Sound('sonido/laser.wav')
+laser = pygame.mixer.Sound('sonido/laser.wav')
+
+explosiones_random =[pygame.mixer.Sound('sonido/explosion1.wav'),
+                                     pygame.mixer.Sound('sonido/explosion2.wav'),
+                                     pygame.mixer.Sound('sonido/explosion3.wav'),
+                                     pygame.mixer.Sound('sonido/explosion4.wav')]
+
+ambiente = pygame.mixer.Sound('sonido/space_ambient.ogg')
+
+ambiente.play()
 
 class Jugador(pygame.sprite.Sprite):
   def __init__(self):
@@ -69,8 +81,9 @@ class Jugador(pygame.sprite.Sprite):
       self.rect.top = 0
           
   def disparo(self):
-    bala = Disparos(self.rect.centerx, self.rect.top)
+    bala = Disparos(self.rect.centerx, self.rect.top +20)
     balas.add(bala)
+    laser.play()
   '''def disparo2(self):
     bala = Disparos(self.rect.centerx + 23, self.rect.top + 30)
     balas.add(bala)
@@ -282,15 +295,19 @@ while ejecutando:
 
   if colision_disparos_amarillos:
     puntuacion += 10
+    explosiones_random[random.randrange(0,3)].play()
 
   if colision_disparos_verdes:
     puntuacion += 25
+    explosiones_random[random.randrange(0,3)].play()
 
   if colision_disparos_azules:
     puntuacion += 50
+    explosiones_random[random.randrange(0,3)].play()
 
   if colision_disparos_rojos:
     puntuacion += 100
+    explosiones_random[random.randrange(0,3)].play()
 
   if not enemigos_amarillos and not enemigos_verdes and not enemigos_azules and not enemigos_rojos:
     enemigo1 = EnemigosAmarillos()
@@ -314,7 +331,7 @@ while ejecutando:
   enemigos_rojos.draw(pantalla)
   balas.draw(pantalla)
   meteoritos.draw(pantalla)
-  muestra_texto(pantalla, consolas, str(puntuacion), rojo, 40,700, 50)
+  muestra_texto(pantalla, consolas, str(puntuacion).zfill(7), rojo, 40,700, 50)
   pygame.display.flip()
   
 
