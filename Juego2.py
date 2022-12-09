@@ -47,6 +47,8 @@ class Jugador(pygame.sprite.Sprite):
     self.rect.center = (400,600)
     self.velocidad_x = 0 
     self.velocidad_y = 0
+    self.retraso = 750
+    self.ultimo_disparo = pygame.time.get_ticks()
 
   def update(self):
 
@@ -64,8 +66,13 @@ class Jugador(pygame.sprite.Sprite):
     if teclas[pygame.K_s]:
        self.velocidad_y = 10
     if teclas[pygame.K_SPACE]:
-       jugador.disparo()
-
+       ahora = pygame.time.get_ticks()
+       if ahora - self.ultimo_disparo > self.retraso:
+        self.disparo()
+        self.disparo2()
+        self.disparo3()
+        self.ultimo_disparo = ahora
+        
     self.rect.x += self.velocidad_x
     self.rect.y += self.velocidad_y
   
@@ -84,12 +91,12 @@ class Jugador(pygame.sprite.Sprite):
     bala = Disparos(self.rect.centerx, self.rect.top +20)
     balas.add(bala)
     laser.play()
-  '''def disparo2(self):
+  def disparo2(self):
     bala = Disparos(self.rect.centerx + 23, self.rect.top + 30)
     balas.add(bala)
   def disparo3(self):
     bala = Disparos(self.rect.centerx - 23, self.rect.top + 30)
-    balas.add(bala)'''
+    balas.add(bala)
 
 class EnemigosAmarillos(pygame.sprite.Sprite):
   def __init__(self):
