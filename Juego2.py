@@ -1,5 +1,21 @@
 import pygame
 import random
+import os
+
+carpeta_juego = os.path.dirname(__file__)
+
+carpeta_imagenes = os.path.join(carpeta_juego, "imagenes")
+carpeta_imagenes_enemigos = os.path.join(carpeta_imagenes, "enemigos")
+carpeta_imagenes_fondos = os.path.join(carpeta_imagenes, "fondos")
+carpeta_imagenes_jugador = os.path.join(carpeta_imagenes, "jugador")
+
+carpeta_sonidos= os.path.join(carpeta_juego, "sonidos")
+
+carpeta_sonidos_ambiente = os.path.join(carpeta_sonidos, "ambiente")
+carpeta_sonidos_armas = os.path.join(carpeta_sonidos, "armas")
+carpeta_sonidos_explosiones = os.path.join(carpeta_sonidos, "explosiones")
+
+
 
 ancho = 800
 alto = 600
@@ -23,22 +39,23 @@ arial  = pygame.font.match_font('arial')
 courier = pygame.font.match_font('courier')
 
 pygame.mixer.init()
-pygame.mixer.Sound('sonido/laser.wav')
-laser = pygame.mixer.Sound('sonido/laser.wav')
+pygame.mixer.Sound(os.path.join(carpeta_sonidos_armas,'laser.wav'))
+laser = pygame.mixer.Sound(os.path.join(carpeta_sonidos_armas, 'laser.wav'))
 
-explosiones_random =[pygame.mixer.Sound('sonido/explosion1.wav'),
-                                     pygame.mixer.Sound('sonido/explosion2.wav'),
-                                     pygame.mixer.Sound('sonido/explosion3.wav'),
-                                     pygame.mixer.Sound('sonido/explosion4.wav')]
 
-ambiente = pygame.mixer.Sound('sonido/space_ambient.ogg')
+explosiones_random =[pygame.mixer.Sound(os.path.join(carpeta_sonidos_explosiones, 'explosion1.wav')),
+                                     pygame.mixer.Sound(os.path.join(carpeta_sonidos_explosiones,'explosion2.wav')),
+                                     pygame.mixer.Sound(os.path.join(carpeta_sonidos_explosiones, 'explosion3.wav')),
+                                     pygame.mixer.Sound(os.path.join(carpeta_sonidos_explosiones, 'explosion4.wav'))]
+
+ambiente = pygame.mixer.Sound(os.path.join(carpeta_sonidos_ambiente, 'space_ambient.ogg'))
 
 ambiente.play()
 
 class Jugador(pygame.sprite.Sprite):
   def __init__(self):
     super().__init__()
-    self.image = pygame.image.load("imagenes/nave.png").convert()
+    self.image = pygame.image.load(os.path.join(carpeta_imagenes_jugador, "nave.png")).convert()
     
     self.image.set_colorkey(azul2)
 
@@ -101,7 +118,7 @@ class Jugador(pygame.sprite.Sprite):
 class EnemigosAmarillos(pygame.sprite.Sprite):
   def __init__(self):
     super().__init__()
-    self.image = pygame.image.load("imagenes/enemigo1.png").convert()
+    self.image = pygame.image.load(os.path.join(carpeta_imagenes_enemigos, 'enemigo1.png')).convert()
     
     self.rect = self.image.get_rect()
     self.image.set_colorkey(negro)
@@ -128,7 +145,7 @@ class EnemigosAmarillos(pygame.sprite.Sprite):
 class EnemigosVerdes(pygame.sprite.Sprite):
   def __init__(self):
     super().__init__()
-    self.image = pygame.image.load("imagenes/enemigo2.png").convert()
+    self.image = pygame.image.load(os.path.join(carpeta_imagenes_enemigos, 'enemigo2.png')).convert()
     
     self.rect = self.image.get_rect()
     self.image.set_colorkey(negro)
@@ -155,7 +172,7 @@ class EnemigosVerdes(pygame.sprite.Sprite):
 class EnemigosAzules(pygame.sprite.Sprite):
   def __init__(self):
     super().__init__()
-    self.image = pygame.image.load("imagenes/enemigo3.png").convert()
+    self.image = pygame.image.load(os.path.join(carpeta_imagenes_enemigos, 'enemigo3.png')).convert()
     
     self.rect = self.image.get_rect()
     self.image.set_colorkey(negro)
@@ -182,7 +199,7 @@ class EnemigosAzules(pygame.sprite.Sprite):
 class EnemigosRojos(pygame.sprite.Sprite):
   def __init__(self):
     super().__init__()
-    self.image = pygame.image.load("imagenes/enemigo4.png").convert()
+    self.image = pygame.image.load(os.path.join(carpeta_imagenes_enemigos, 'enemigo4.png')).convert()
     
     self.rect = self.image.get_rect()
     self.image.set_colorkey(negro)
@@ -209,7 +226,7 @@ class EnemigosRojos(pygame.sprite.Sprite):
 class Disparos(pygame.sprite.Sprite):
   def __init__(self, x, y):
     super().__init__()
-    self.image = pygame.transform.scale(pygame.image.load("imagenes/disparo.png").convert(),(10,20))
+    self.image = pygame.transform.scale(pygame.image.load(os.path.join(carpeta_imagenes_jugador, 'disparo.png')).convert(),(10,20))
     self.image.set_colorkey(negro)
     self.rect = self.image.get_rect()
     self.rect.bottom = y
@@ -225,7 +242,7 @@ class  Meteoritos(pygame.sprite.Sprite):
     super().__init__()
     self.img_aleatoria = random.randrange(3)
     if self.img_aleatoria == 0:
-      self.image = pygame.transform.scale(pygame.image.load("imagenes/meteorito.png").convert(), (100,100))
+      self.image = pygame.transform.scale(pygame.image.load(os.path.join(carpeta_imagenes_enemigos, 'meteorito.png')).convert(), (100,100))
       self.radius = 50
     if self.img_aleatoria == 1:
       self.image = pygame.transform.scale(pygame.image.load("imagenes/meteorito.png").convert(), (50,50))
