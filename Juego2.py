@@ -361,10 +361,56 @@ while ejecutando:
   meteoritos.update()
   explosiones.update()
 
+  r = random.randrange(1, 4)
+
   colision_disparos_amarillos = pygame.sprite.groupcollide(enemigos_amarillos, balas, True, True, pygame.sprite.collide_circle)
   colision_disparos_verdes = pygame.sprite.groupcollide(enemigos_verdes, balas, True, True, pygame.sprite.collide_circle)
   colision_disparos_azules = pygame.sprite.groupcollide(enemigos_azules, balas, True, True, pygame.sprite.collide_circle)
   colision_disparos_rojos= pygame.sprite.groupcollide(enemigos_rojos, balas, True, True, pygame.sprite.collide_circle)
+
+  colision_nave1 = pygame.sprite.spritecollide(jugador, enemigos_amarillos, True, pygame.sprite.collide_circle)
+  if colision_nave1:
+    explosiones_random[random.randrange(0,3)].play()
+    explosion = Explosiones(enemigo1.rect.center, f't{r}')
+    explosiones.add(explosion)
+    if puntuacion >= 0:
+      puntuacion -= 100
+      if puntuacion < 0:
+        puntuacion = 0
+
+  colision_nave2 = pygame.sprite.spritecollide(jugador, enemigos_verdes, True, pygame.sprite.collide_circle)
+  if colision_nave2:
+    explosiones_random[random.randrange(0,3)].play()
+    explosion = Explosiones(enemigo2.rect.center, f't{r}')
+    explosiones.add(explosion)
+    if puntuacion >= 0:
+      puntuacion -= 75
+      if puntuacion < 0:
+        puntuacion = 0
+
+
+  colision_nave3 = pygame.sprite.spritecollide(jugador, enemigos_azules, True, pygame.sprite.collide_circle)
+  if colision_nave3:
+    explosiones_random[random.randrange(0,3)].play()
+    explosion = Explosiones(enemigo3.rect.center, f't{r}')
+    explosiones.add(explosion)
+    if puntuacion >= 0:
+      puntuacion -= 50
+      if puntuacion < 0:
+        puntuacion = 0
+
+
+  colision_nave4 = pygame.sprite.spritecollide(jugador, enemigos_rojos, True, pygame.sprite.collide_circle)
+  if colision_nave4:
+    explosiones_random[random.randrange(0,3)].play()
+    explosion = Explosiones(enemigo4.rect.center, f't{r}')
+    explosiones.add(explosion)
+    if puntuacion >= 0:
+      puntuacion -= 25
+      if puntuacion < 0:
+        puntuacion = 0
+
+
 
   if colision_disparos_amarillos:
     puntuacion += 10
