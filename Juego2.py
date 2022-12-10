@@ -14,7 +14,7 @@ carpeta_sonidos= os.path.join(carpeta_juego, "sonidos")
 carpeta_sonidos_ambiente = os.path.join(carpeta_sonidos, "ambiente")
 carpeta_sonidos_armas = os.path.join(carpeta_sonidos, "armas")
 carpeta_sonidos_explosiones = os.path.join(carpeta_sonidos, "explosiones")
-
+carpeta_imagenes_explosiones = os.path.join(carpeta_imagenes, "explosiones")
 
 
 ancho = 800
@@ -263,10 +263,56 @@ class  Meteoritos(pygame.sprite.Sprite):
       self.rect.y = -self.rect.width
       self.velocidad_y = random.randrange(1,10)
 
+class Explosiones(pygame.sprite.Sprite):
+  def __init__(self, centro, dimensiones):
+    pygame.sprite.Sprite.__init__(self)
+    self.dimensiones = dimensiones
+    self.image = animacion_explosion1[self.dimensiones][0]
+    self.rect = self.image.get_rect()
+    self.rect.center = centro
+    self.fotograma = 0
+    self.frecuencia_fotograma = 35
+    self.actualizacion = pygame.time.get_ticks()
+
+  def update(self):
+    ahora = pygame.time.get_ticks()
+    if ahora - self.actualizacion > self.frecuencia_fotograma:
+      self.actualizacion = ahora
+      self.fotograma += 1
+      if self.fotograma == len(animacion_explosion1[self.dimensiones]):
+          self.kill()
+      else:
+        centro = self.rect.center
+        self.image = animacion_explosion1[self.dimensiones][self.fotograma]
+        self.rect = self.image.get_rect()
+        self.rect.center = centro
+
+
+
+
+
 pygame.init()
 pantalla = pygame.display.set_mode((ancho, alto))
 
 puntuacion = 0
+
+animacion_explosion1 = {'t1': [], 't2': [], 't3': [], 't4': []}
+
+for x in range(24):
+  archivo_explosiones = f'expl_01_{x:04d}.png'
+  imagenes = pygame.image.load(os.path.join(carpeta_imagenes_explosiones, archivo_explosiones)).convert()
+  imagenes.set_colorkey(negro)
+  imagenes_t1 = pygame.transform.scale(imagenes, (32, 32))
+  animacion_explosion1['t1'].append(imagenes_t1)
+  imagenes_t2 = pygame.transform.scale(imagenes, (64,64))
+  animacion_explosion1['t2'].append(imagenes_t2)
+  imagenes_t3 = pygame.transform.scale(imagenes, (128, 128))
+  animacion_explosion1['t3'].append(imagenes_t3)
+  imagenes_t4 = pygame.transform.scale(imagenes, (256, 256))
+  animacion_explosion1['t4'].append(imagenes_t4)
+
+
+
 
 def muestra_texto(pantalla, fuente, texto, color, dimensiones, x, y):
   tipo_letra = pygame.font.Font(fuente, dimensiones)
@@ -286,7 +332,9 @@ enemigos_verdes=pygame.sprite.Group()
 enemigos_azules=pygame.sprite.Group()
 enemigos_rojos=pygame.sprite.Group()
 balas = pygame.sprite.Group()
+explosiones = pygame.sprite.Group()
 meteoritos = pygame.sprite.Group()
+
 
 
 jugador = Jugador()
@@ -311,6 +359,7 @@ while ejecutando:
   enemigos_rojos.update()
   balas.update()
   meteoritos.update()
+  explosiones.update()
 
   colision_disparos_amarillos = pygame.sprite.groupcollide(enemigos_amarillos, balas, True, True, pygame.sprite.collide_circle)
   colision_disparos_verdes = pygame.sprite.groupcollide(enemigos_verdes, balas, True, True, pygame.sprite.collide_circle)
@@ -320,18 +369,26 @@ while ejecutando:
   if colision_disparos_amarillos:
     puntuacion += 10
     explosiones_random[random.randrange(0,3)].play()
+    explosion = Explosiones(enemigo1.rect.center, 't1')
+    explosiones.add(explosion)
 
   if colision_disparos_verdes:
     puntuacion += 25
     explosiones_random[random.randrange(0,3)].play()
+    explosion = Explosiones(enemigo2.rect.center, 't2')
+    explosiones.add(explosion)
 
   if colision_disparos_azules:
     puntuacion += 50
     explosiones_random[random.randrange(0,3)].play()
+    explosion = Explosiones(enemigo3.rect.center, 't3')
+    explosiones.add(explosion)
 
   if colision_disparos_rojos:
     puntuacion += 100
     explosiones_random[random.randrange(0,3)].play()
+    explosion = Explosiones(enemigo4.rect.center, 't4')
+    explosiones.add(explosion)
 
   if not enemigos_amarillos and not enemigos_verdes and not enemigos_azules and not enemigos_rojos:
     enemigo1 = EnemigosAmarillos()
@@ -355,6 +412,7 @@ while ejecutando:
   enemigos_rojos.draw(pantalla)
   balas.draw(pantalla)
   meteoritos.draw(pantalla)
+  explosiones.draw(pantalla)
   muestra_texto(pantalla, consolas, str(puntuacion).zfill(7), rojo, 40,700, 50)
   pygame.display.flip()
   
