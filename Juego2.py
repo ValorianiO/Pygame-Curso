@@ -14,6 +14,7 @@ carpeta_sonidos= os.path.join(carpeta_juego, "sonidos")
 carpeta_sonidos_ambiente = os.path.join(carpeta_sonidos, "ambiente")
 carpeta_sonidos_armas = os.path.join(carpeta_sonidos, "armas")
 carpeta_sonidos_explosiones = os.path.join(carpeta_sonidos, "explosiones")
+
 carpeta_imagenes_explosiones = os.path.join(carpeta_imagenes, "explosiones")
 
 
@@ -67,6 +68,8 @@ class Jugador(pygame.sprite.Sprite):
     self.retraso = 750
     self.ultimo_disparo = pygame.time.get_ticks()
     self.hp = 100
+    self.vidas = 3
+
 
   def update(self):
 
@@ -256,7 +259,7 @@ class  Meteoritos(pygame.sprite.Sprite):
       self.image = pygame.transform.scale(pygame.image.load(os.path.join(carpeta_imagenes_enemigos, 'meteorito.png')).convert(), (25,25))
       self.radius = 12
     self.image.set_colorkey(negro)
-    self.rect = self. image.get_rect()
+    self.rect = self.image.get_rect()
     self.rect.x = random.randrange(ancho - self.rect.width)
     self.rect.y = -self.rect.width
     self.velocidad_y = random.randrange(1,10)
@@ -325,12 +328,7 @@ def barra_hp(pantalla, x, y, hp):
   rectangulo = pygame.Rect(x, y, calculo_barra, ancho)
   pygame.draw.rect(pantalla, azul2, borde, 3)
   pygame.draw.rect(pantalla, h_50d2fe, rectangulo)
-  pantalla.blit(pygame.transform.scale(jugador.image,(25,25)), (545, 15))
-  warning = pygame.image.load(os.path.join(carpeta_imagenes_jugador, 'warning.png')).convert()
-  if jugador.hp < 0:
-    jugador.hp = 0
-  if jugador.hp < 30:
-    pantalla.blit(pygame.transform.scale(warning, (25,25)), (545, 15))
+  
 
 
 def muestra_texto(pantalla, fuente, texto, color, dimensiones, x, y):
@@ -484,12 +482,54 @@ while ejecutando:
     enemigo4.hp -= 5
     if enemigo4.hp <= 0:
       enemigo4.kill()
+  
+
+  warning = pygame.image.load(os.path.join(carpeta_imagenes_jugador, 'warning.png')).convert()
+  muerte_3 = pantalla.blit(pygame.transform.scale(jugador.image,(25,25)), (510,15))
+  muerte_2 = pantalla.blit(pygame.transform.scale(jugador.image,(25,25)), (475,15))
+  muerte_1 = pantalla.blit(pygame.transform.scale(jugador.image,(25,25)), (440,15))
+  cruz = pygame.image.load(os.path.join(carpeta_imagenes_jugador, 'cruz.png')).convert()
+
+  if jugador.hp < 30:
+    pantalla.blit(pygame.transform.scale(warning, (25,25)), (545, 15))
+
+  
+  if jugador.hp <= 0 and jugador.vidas == 3:
+    jugador.kill()
+    jugador = Jugador()
+    sprites.add(jugador)
+    jugador.vidas = 2
+  
+  if jugador.vidas == 2:
+    if jugador.hp <= 0:
+      jugador.kill()
+      jugador = Jugador()
+      sprites.add(jugador)
+      jugador.vidas = 1
+    muerte_1 = pantalla.blit(pygame.transform.scale(cruz, (25,25)), (510, 15))
+  
+  if jugador.vidas == 1:
+    if jugador.hp <= 0:
+      jugador.kill()
+      jugador = Jugador()
+      sprites.add(jugador)
+      jugador.vidas = 0
+    muerte_1 = pantalla.blit(pygame.transform.scale(cruz, (25,25)), (510, 15))
+    muerte_2 = pantalla.blit(pygame.transform.scale(cruz, (25,25)), (475, 15))
+
+  if jugador.vidas == 0:
+    if jugador.hp <= 0:
+      jugador.kill()
+      jugador.hp = 0
+    muerte_1 = pantalla.blit(pygame.transform.scale(cruz, (25,25)), (510, 15))
+    muerte_2 = pantalla.blit(pygame.transform.scale(cruz, (25,25)), (475, 15))
+    muerte_3 = pantalla.blit(pygame.transform.scale(cruz, (25,25)), (440, 15))
 
 
   colision_nave_meteoritos = pygame.sprite.spritecollide(jugador, meteoritos, pygame.sprite.collide_circle)
   if colision_nave_meteoritos:
     explosiones_random[random.randrange(0,3)].play()
-    explosiones.add(explosion)
+    explosiones.add(explosiones)
     jugador.hp -= 15
     if puntuacion >= 0:
       puntuacion -= 10
